@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title', 'AdminIX')</title>
+  <title>@yield('title', 'ADMINIX')</title>
 
   <!-- CSS desde CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
@@ -99,7 +99,7 @@
 
   <!-- Footer -->
   <footer class="main-footer text-center">
-    <strong>&copy; {{ date('Y') }} AdminIX.</strong> Todos los derechos reservados.
+    <strong>&copy; {{ date('Y') }} ADMINIX.</strong> Todos los derechos reservados.
   </footer>
 </div>
 
