@@ -1,10 +1,13 @@
-@extends('layouts.layout')
+@extends('layouts.app')
 
 @section('title', 'Listado de Usuarios')
 @section('header', 'Usuarios Registrados')
 
 @section('content')
     <a href="{{ route('users.create') }}" class="btn">Crear Nuevo Usuario</a>
+    <a href="{{ route('products.index') }}" class="btn">Registrar Inventario</a>
+
+
     <br><br>
     <table class="table">
         <thead>
