@@ -14,14 +14,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 use App\Http\Controllers\CategoriaController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DashboardController;
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])->name('dashboard');
 
 Route::resource('categorias', App\Http\Controllers\CategoriaController::class);
+
+Route::middleware('auth')->group(function () {
+    Route::resource('users', App\Http\Controllers\UserController::class);
+});
 
 require __DIR__.'/auth.php';
