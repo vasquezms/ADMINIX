@@ -5,6 +5,7 @@
 
 @section('content')
     <a href="{{ route('users.create') }}" class="btn">Crear Nuevo Usuario</a>
+    <a href="{{ route('dashboard') }}" class="btn btn-secondary">← Regresar al Dashboard</a>
     <br><br>
     <table class="table">
         <thead>

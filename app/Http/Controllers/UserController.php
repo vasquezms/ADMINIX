@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         // Obtener todos los usuarios y enviarlos a la vista
@@ -17,18 +17,13 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         // Mostrar el formulario para crear un nuevo usuario
         return view('users.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */public function store(Request $request)
+    public function store(Request $request)
 {
     // Validar los datos del formulario
     $request->validate([
@@ -47,10 +42,6 @@ class UserController extends Controller
     // Redirigir al listado de usuarios con un mensaje de éxito
     return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente.');
 }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         // Mostrar un usuario específico
@@ -58,9 +49,6 @@ class UserController extends Controller
         return view('users.show', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         // Mostrar el formulario para editar un usuario
@@ -68,9 +56,6 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         // Validar y actualizar un usuario existente
@@ -90,9 +75,6 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         // Eliminar un usuario
@@ -100,5 +82,19 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
+    }
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        if (!Hash::check($request->current_password, Auth::user()->password)) {
+            return back()->withErrors(['current_password' => 'La contraseña actual no es correcta.']);
+        }
+
+        Auth::user()->update(['password' => bcrypt($request->password)]);
+        return back()->with('success', 'Contraseña actualizada con éxito.');
     }
 }
