@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title', 'AdminIX')</title>
+  <title>@yield('title', 'ADMINIX')</title>
 
   <!-- CSS desde CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
@@ -26,18 +26,18 @@
     </ul>
   </nav>
 
-  <!-- Sidebar -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="/dashboard" class="brand-link">
-      <span class="brand-text font-weight-light ml-3">ADMINIX</span>
-    </a>
+    <!-- Sidebar -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <a href="/dashboard" class="brand-link">
+        <span class="brand-text font-weight-light ml-3">ADMINIX</span>
+      </a>
 
-    <div class="sidebar">
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="info">
-          <a href="#" class="d-block">Hola, {{ Auth::user()->name ?? 'Usuario' }}</a>
+      <div class="sidebar">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="info">
+            <a href="#" class="d-block">Hola, {{ Auth::user()->name ?? 'Usuario' }}</a>
+          </div>
         </div>
-      </div>
 
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
@@ -47,38 +47,44 @@
               <p>Dashboard</p>
             </a>
           </li>
+
           <li class="nav-item">
             <a href="{{ route('categorias.index') }}" class="nav-link">
               <i class="nav-icon fas fa-tags"></i>
-              <p>Ventas</p>
+              <p>Gestión de Ventas</p>
             </a>
           </li>
+
           <li class="nav-item">
             <a href="{{ route('categorias.index') }}" class="nav-link">
               <i class="nav-icon fas fa-tags"></i>
-              <p>Finanzas</p>
+              <p>Gestión de Finanzas</p>
             </a>
           </li>
+
           <li class="nav-item">
             <a href="{{ route('categorias.index') }}" class="nav-link">
               <i class="nav-icon fas fa-tags"></i>
               <p>Inventarios</p>
             </a>
           </li>
+
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('products.index') }}" class="nav-link">
               <i class="nav-icon fas fa-box"></i>
               <p>Productos</p>
             </a>
           </li>
+
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('users.index') }}" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
               <p>Usuarios</p>
             </a>
           </li>
         </ul>
       </nav>
+
     </div>
   </aside>
 
@@ -93,7 +99,7 @@
 
   <!-- Footer -->
   <footer class="main-footer text-center">
-    <strong>&copy; {{ date('Y') }} AdminIX.</strong> Todos los derechos reservados.
+    <strong>&copy; {{ date('Y') }} ADMINIX.</strong> Todos los derechos reservados.
   </footer>
 </div>
 

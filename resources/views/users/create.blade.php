@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('layouts.main')
 
 @section('title', 'Crear Usuario')
 @section('header', 'Crear Nuevo Usuario')
