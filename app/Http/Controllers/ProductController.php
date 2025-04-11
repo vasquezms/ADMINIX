@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-
     public function index()
     {
-        $products = Product::all();
-        return view('products.index', compact('products'));
+        $products = Product::paginate(10);
+
+        return view('products.index', compact('products'))
+            ->with('i', (request()->input('page', 1) - 1) * 10);
     }
 
     public function create()
@@ -22,14 +23,29 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required',
+        $request->merge([
+            'price' => $this->parseColombianPrice($request->input('price'))
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'product' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'quantity' => 'required|integer',
             'price' => 'required|numeric',
         ]);
 
-        Product::create($validated);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-        return redirect()->route('products.index')->with('success', 'Producto creado');
+        Product::create($request->all());
+
+        return redirect()->route('products.index')->with('success', 'Producto creado exitosamente.');
+    }
+
+    public function show(Product $product)
+    {
+        return view('products.show', compact('product'));
     }
 
     public function edit(Product $product)
@@ -39,20 +55,40 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'name' => 'required',
+        $request->merge([
+            'price' => $this->parseColombianPrice($request->input('price'))
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'product' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'quantity' => 'required|integer',
             'price' => 'required|numeric',
         ]);
 
-        $product->update($validated);
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-        return redirect()->route('products.index')->with('success', 'Producto actualizado');
+        $product->update($request->all());
+
+        return redirect()->route('products.index')->with('success', 'Producto actualizado exitosamente.');
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Producto eliminado');
+
+        return redirect()->route('products.index')->with('success', 'Producto eliminado exitosamente.');
+    }
+
+    private function parseColombianPrice($price)
+    {
+        if (is_string($price)) {
+            $price = preg_replace('/\.(?=\d{3}(?:,|$))/', '', $price);
+            $price = str_replace(',', '.', $price);
+        }
+
+        return is_numeric($price) ? (float)$price : 0;
     }
 }
-

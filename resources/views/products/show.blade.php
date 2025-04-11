@@ -35,7 +35,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <strong>Precio:</strong>
-                            {{ number_format($product->price, 2, ',', '.') }}
+                            {{ number_format($product->price, 0, ',', '.') }}
                         </div>
                     </div>
                 </div>
