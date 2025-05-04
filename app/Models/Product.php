@@ -16,32 +16,23 @@ class Product extends Model
         'price' => 'decimal:2'
     ];
 
-    /**
-     * Relación con los detalles de venta
-     */
     public function saleDetails()
     {
         return $this->hasMany(SaleDetail::class);
     }
 
-    /**
-     * Verificar si hay suficiente stock disponible
-     */
     public function hasStock($quantity)
     {
         return $this->quantity >= $quantity;
     }
 
-    /**
-     * Reducir el stock del producto
-     */
     public function decrementStock($quantity)
     {
-    $this->decrement('quantity', $quantity);
+        $this->decrement('quantity', $quantity);
     }
 
     public function incrementStock($quantity)
     {
-    $this->increment('quantity', $quantity); 
+        $this->increment('quantity', $quantity);
     }
 }

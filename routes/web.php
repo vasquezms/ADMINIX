@@ -13,7 +13,6 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -41,8 +40,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{supply}', [SupplyController::class, 'show'])->name('show');
         Route::delete('/{supply}', [SupplyController::class, 'destroy'])->name('destroy');
     });
-
-
 });
 
 require __DIR__.'/auth.php';
