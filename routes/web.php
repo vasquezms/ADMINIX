@@ -1,4 +1,5 @@
 <?php
+// routes/web.php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
@@ -14,15 +15,37 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
+    // Dashboard (accesible para todos los autenticados)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Rutas para el CRUD básico
-    Route::resource('users', UserController::class);
+    // SOLO ADMINISTRADOR
+    Route::middleware(['role:Administrador'])->group(function () {
+        Route::resource('users', UserController::class);
+
+        Route::prefix('roles')->name('roles.')->group(function () {
+            Route::get('/', [RoleController::class, 'index'])->name('index');
+            Route::get('/create', [RoleController::class, 'create'])->name('create');
+            Route::post('/', [RoleController::class, 'store'])->name('store');
+            Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('edit');
+            Route::put('/{role}', [RoleController::class, 'update'])->name('update');
+            Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::get('roles/{role}/assign-users', [RoleController::class, 'showAssignUsers'])->name('roles.showAssignUsers');
+        Route::post('roles/{role}/assign-users', [RoleController::class, 'assignUsers'])->name('roles.assignUsers');
+    });
+
+    // SOLO VENDEDOR (aquí puedes agregar rutas exclusivas para vendedores si lo deseas)
+    Route::middleware(['role:Vendedor'])->group(function () {
+        // Ejemplo: rutas exclusivas para vendedores
+        // Route::get('/ventas/reportes', [SaleController::class, 'reportes'])->name('sales.reportes');
+    });
+
+    // Rutas accesibles para ambos (Administrador y Vendedor)
     Route::resource('products', ProductController::class);
     Route::resource('categorias', CategoriaController::class);
 
-    // Rutas relacionadas con ventas
+    // Ventas
     Route::prefix('sales')->name('sales.')->group(function () {
         Route::get('/', [SaleController::class, 'index'])->name('index');
         Route::get('/create', [SaleController::class, 'create'])->name('create');
@@ -33,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{sale}', [SaleController::class, 'destroy'])->name('destroy');
     });
 
-    // Rutas relacionadas con abastecimiento
+    // Abastecimiento
     Route::prefix('supplies')->name('supplies.')->group(function () {
         Route::get('/', [SupplyController::class, 'index'])->name('index');
         Route::get('/create', [SupplyController::class, 'create'])->name('create');
@@ -41,19 +64,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{supply}', [SupplyController::class, 'show'])->name('show');
         Route::delete('/{supply}', [SupplyController::class, 'destroy'])->name('destroy');
     });
-
-    // Rutas relacionadas con roles
-    Route::prefix('roles')->name('roles.')->group(function () {
-        Route::get('/', [RoleController::class, 'index'])->name('index');         // Listar roles
-        Route::get('/create', [RoleController::class, 'create'])->name('create'); // Formulario crear
-        Route::post('/', [RoleController::class, 'store'])->name('store');        // Guardar nuevo
-        Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('edit'); // Formulario editar
-        Route::put('/{role}', [RoleController::class, 'update'])->name('update');  // Actualizar
-        Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy'); // Eliminar
-    });
-
-    Route::get('roles/{role}/assign-users', [RoleController::class, 'showAssignUsers'])->name('roles.showAssignUsers');
-    Route::post('roles/{role}/assign-users', [RoleController::class, 'assignUsers'])->name('roles.assignUsers');
 });
 
 require __DIR__.'/auth.php';
