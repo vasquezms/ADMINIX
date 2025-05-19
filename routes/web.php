@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\SupplyController;
+use App\Http\Controllers\RoleController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -40,6 +41,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{supply}', [SupplyController::class, 'show'])->name('show');
         Route::delete('/{supply}', [SupplyController::class, 'destroy'])->name('destroy');
     });
+
+    // Rutas relacionadas con roles
+    Route::prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->name('index');         // Listar roles
+        Route::get('/create', [RoleController::class, 'create'])->name('create'); // Formulario crear
+        Route::post('/', [RoleController::class, 'store'])->name('store');        // Guardar nuevo
+        Route::get('/{role}/edit', [RoleController::class, 'edit'])->name('edit'); // Formulario editar
+        Route::put('/{role}', [RoleController::class, 'update'])->name('update');  // Actualizar
+        Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy'); // Eliminar
+    });
+
+    Route::get('roles/{role}/assign-users', [RoleController::class, 'showAssignUsers'])->name('roles.showAssignUsers');
+    Route::post('roles/{role}/assign-users', [RoleController::class, 'assignUsers'])->name('roles.assignUsers');
 });
 
 require __DIR__.'/auth.php';

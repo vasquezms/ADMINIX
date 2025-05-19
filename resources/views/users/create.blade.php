@@ -4,6 +4,11 @@
 @section('header', 'Crear Nuevo Usuario')
 
 @section('content')
+    {{-- Mostrar solo si el usuario es administrador --}}
+    @if(auth()->user()->hasRole('administrador'))
+        <a href="{{ route('users.create') }}" class="btn btn-primary">Crear usuario</a>
+    @endif
+
     <form action="{{ route('users.store') }}" method="POST">
         @csrf
         <label for="name">Nombre:</label>

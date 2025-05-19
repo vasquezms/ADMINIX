@@ -53,19 +53,19 @@
             <i class="ion ion-person-add"></i>
           </div>
           <a href="{{ route('users.index') }}" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
-          </div>
+        </div>
       </div>
 
       <div class="col-lg-3 col-6">
-        <div class="small-box bg-danger">
+        <div class="small-box bg-primary">
           <div class="inner">
-            <h3>65</h3>
-            <p>Visitas únicas</p>
+            <h3>Roles</h3>
+            <p>Gestión de roles</p>
           </div>
           <div class="icon">
-            <i class="ion ion-pie-graph"></i>
+            <i class="fas fa-user-shield"></i>
           </div>
-          <a href="#" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{ route('roles.index') }}" class="small-box-footer">Ir a roles <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
     </div>
@@ -108,13 +108,12 @@
           </div>
         </div>
       </div>
-
     </div>
 
-      <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="mb-3">Cerrar sesión</button>
-      </form>
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit" class="mb-3">Cerrar sesión</button>
+    </form>
 
   </div>
 </div>

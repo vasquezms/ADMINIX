@@ -33,11 +33,12 @@ class UserController extends Controller
     ]);
 
     // Crear un nuevo usuario
-    User::create([
+    $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
         'password' => bcrypt($request->password), // Encriptar la contraseña
     ]);
+    $user->syncRoles([$request->role]);
 
     // Redirigir al listado de usuarios con un mensaje de éxito
     return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente.');
@@ -71,6 +72,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
         ]);
+        $user->syncRoles([$request->role]);
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
     }
