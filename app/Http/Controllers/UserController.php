@@ -2,89 +2,91 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-
     public function index()
     {
-        // Obtener todos los usuarios y enviarlos a la vista
         $users = User::all();
         return view('users.index', compact('users'));
     }
 
     public function create()
     {
-        // Mostrar el formulario para crear un nuevo usuario
-        return view('users.create');
+        $roles = Role::all();
+        return view('users.create', compact('roles'));
     }
 
     public function store(Request $request)
-{
-    // Validar los datos del formulario
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|regex:/^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/|unique:users,email',
-        'password' => 'required|string|min:8',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name',
+        ]);
 
-    // Crear un nuevo usuario
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password), // Encriptar la contraseña
-    ]);
-    $user->syncRoles([$request->role]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
 
-    // Redirigir al listado de usuarios con un mensaje de éxito
-    return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente.');
-}
+        $user->assignRole($request->role);
+
+        return redirect()->route('users.index')->with('success', 'Usuario creado correctamente.');
+    }
+
     public function show(string $id)
     {
-        // Mostrar un usuario específico
         $user = User::findOrFail($id);
         return view('users.show', compact('user'));
     }
 
     public function edit(string $id)
     {
-        // Mostrar el formulario para editar un usuario
         $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        $roles = Role::all();
+        return view('users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, string $id)
     {
-        // Validar y actualizar un usuario existente
+        $user = User::findOrFail($id);
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name',
         ]);
 
-        $user = User::findOrFail($id);
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password ? bcrypt($request->password) : $user->password,
-        ]);
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->password) {
+            $user->password = bcrypt($request->password);
+        }
+
+        $user->save();
         $user->syncRoles([$request->role]);
 
-        return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
     public function destroy(string $id)
     {
-        // Eliminar un usuario
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
+        return redirect()->route('users.index')->with('success', 'Usuario eliminado correctamente.');
     }
+
     public function changePassword(Request $request)
     {
         $request->validate([

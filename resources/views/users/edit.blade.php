@@ -4,39 +4,34 @@
 @section('header', 'Editar Usuario')
 
 @section('content')
-    {{-- Mostrar solo si el usuario es administrador --}}
-    @if(auth()->user()->hasRole('administrador'))
-        <a href="{{ route('users.create') }}" class="btn btn-primary">Crear usuario</a>
-    @endif
-
     <form action="{{ route('users.update', $user->id) }}" method="POST">
         @csrf
         @method('PUT')
-        <div>
-            <label for="name">Nombre:</label>
-            <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required>
-            @error('name')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-        <br>
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" required>
-            @error('email')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-        <br>
-        <div>
-            <label for="password">Contraseña (opcional):</label>
-            <input type="password" name="password" id="password">
-            @error('password')
-                <div class="error">{{ $message }}</div>
-            @enderror
-        </div>
-        <br>
-        <button type="submit" class="btn">Actualizar</button>
-        <a href="{{ route('users.index') }}" class="btn">Volver al listado</a>
+
+        <label for="name">Nombre:</label>
+        <input type="text" name="name" value="{{ old('name', $user->name) }}" required>
+        @error('name') <div class="error">{{ $message }}</div> @enderror
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" value="{{ old('email', $user->email) }}" required>
+        @error('email') <div class="error">{{ $message }}</div> @enderror
+
+        <label for="password">Contraseña (opcional):</label>
+        <input type="password" name="password">
+        @error('password') <div class="error">{{ $message }}</div> @enderror
+
+        <label for="role">Rol:</label>
+        <select name="role" required>
+            @foreach ($roles as $role)
+                <option value="{{ $role->name }}" {{ $user->hasRole($role->name) ? 'selected' : '' }}>
+                    {{ ucfirst($role->name) }}
+                </option>
+            @endforeach
+        </select>
+        @error('role') <div class="error">{{ $message }}</div> @enderror
+
+        <br><br>
+        <button type="submit">Actualizar</button>
+        <a href="{{ route('users.index') }}">Volver</a>
     </form>
 @endsection

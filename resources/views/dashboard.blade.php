@@ -57,15 +57,17 @@
       </div>
 
       <div class="col-lg-3 col-6">
-        <div class="small-box bg-primary">
+        <div class="small-box bg-danger">
           <div class="inner">
-            <h3>Roles</h3>
-            <p>Gestión de roles</p>
+            <h3>{{ $totalDebtors }}</h3>
+            <p>Cantidad de personas morosas</p>
           </div>
           <div class="icon">
-            <i class="fas fa-user-shield"></i>
+            <i class="ion ion-pie-graph"></i>
           </div>
-          <a href="{{ route('roles.index') }}" class="small-box-footer">Ir a roles <i class="fas fa-arrow-circle-right"></i></a>
+          <a href="{{ route('debtors.index') }}" class="small-box-footer">
+            Más info <i class="fas fa-arrow-circle-right"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -73,26 +75,50 @@
     <!-- Tarjeta con gráfica (estructura lista) -->
     <div class="row">
       <div class="col-md-6">
-        <div class="card">
+        <div class="card" style="max-height: 350px; overflow-y: auto;">
           <div class="card-header">
-            <h3 class="card-title">Ventas Mensuales</h3>
+            <h3 class="card-title">Últimas Ventas</h3>
             <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-              <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus"></i>
+              </button>
             </div>
           </div>
-          <div class="card-body">
-            <canvas id="salesChart" height="200"></canvas>
+          <div class="p-2 card-body">
+            <div class="table-responsive">
+              <table class="table mb-0 table-sm table-hover table-bordered">
+                <thead class="thead-light">
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Vendedor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @forelse ($latestSales as $sale)
+                    <tr>
+                      <td>{{ $sale->sale_date->format('d/m/Y H:i') }}</td>
+                      <td>${{ number_format($sale->total_amount, 0, ',', '.') }}</td>
+                      <td>{{ $sale->user->name }}</td>
+                    </tr>
+                  @empty
+                    <tr>
+                      <td colspan="3" class="text-center">No hay ventas recientes</td>
+                    </tr>
+                  @endforelse
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-md-6">
-        <div class="card">
+        <div class="card" style="max-height: 350px; overflow-y: auto;">
           <div class="card-header">
             <h3 class="card-title">Productos con bajo stock</h3>
           </div>
-          <div class="card-body">
+          <div class="p-2 card-body">
             <ul class="list-group list-group-flush">
               @forelse ($lowStockProducts as $product)
                 <li class="list-group-item {{ $product->quantity <= 1 ? 'text-danger' : '' }}">
@@ -110,6 +136,7 @@
       </div>
     </div>
 
+    <!-- Cerrar sesión -->
     <form method="POST" action="{{ route('logout') }}">
       @csrf
       <button type="submit" class="mb-3">Cerrar sesión</button>

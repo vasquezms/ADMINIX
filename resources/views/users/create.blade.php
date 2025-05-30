@@ -4,35 +4,32 @@
 @section('header', 'Crear Nuevo Usuario')
 
 @section('content')
-    {{-- Mostrar solo si el usuario es administrador --}}
-    @if(auth()->user()->hasRole('administrador'))
-        <a href="{{ route('users.create') }}" class="btn btn-primary">Crear usuario</a>
-    @endif
-
     <form action="{{ route('users.store') }}" method="POST">
         @csrf
         <label for="name">Nombre:</label>
-        <input type="text" name="name" id="name" value="{{ old('name') }}" required>
-        @error('name')
-            <div class="error">{{ $message }}</div>
-        @enderror
-        <br>
+        <input type="text" name="name" value="{{ old('name') }}" required>
+        @error('name') <div class="error">{{ $message }}</div> @enderror
 
         <label for="email">Email:</label>
-        <input type="email" name="email" id="email" value="{{ old('email') }}" required>
-        @error('email')
-            <div class="error">{{ $message }}</div>
-        @enderror
-        <br>
+        <input type="email" name="email" value="{{ old('email') }}" required>
+        @error('email') <div class="error">{{ $message }}</div> @enderror
 
         <label for="password">Contraseña:</label>
         <input type="password" name="password" id="password" required>
-        @error('password')
-            <div class="error">{{ $message }}</div>
-        @enderror
-        <br>
+        <label for="password_confirmation">Confirmar Contraseña:</label>
+        <input type="password" name="password_confirmation" id="password_confirmation" required>
 
-        <button type="submit" class="btn">Guardar</button>
-        <a href="{{ route('users.index') }}" class="btn">Volver al listado</a>
+        <label for="role">Rol:</label>
+        <select name="role" required>
+            <option value="">-- Seleccione un rol --</option>
+            @foreach ($roles as $role)
+                <option value="{{ $role->name }}">{{ ucfirst($role->name) }}</option>
+            @endforeach
+        </select>
+        @error('role') <div class="error">{{ $message }}</div> @enderror
+
+        <br><br>
+        <button type="submit">Guardar</button>
+        <a href="{{ route('users.index') }}">Volver</a>
     </form>
 @endsection

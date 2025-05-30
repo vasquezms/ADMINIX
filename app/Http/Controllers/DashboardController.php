@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Debtor;
+use App\MOdels\Sale;
 
 class DashboardController extends Controller
 {
@@ -18,6 +19,13 @@ class DashboardController extends Controller
 
         $latestUsers = User::latest()->take(4)->get();
 
-        return view('dashboard', compact('totalUsuarios', 'lowStockProducts', ));
+        $totalDebtors = Debtor::count();
+
+         $latestSales = Sale::with('user') // Carga el vendedor (relación user)
+                        ->orderBy('sale_date', 'desc')
+                        ->take(4)
+                        ->get();
+
+    return view('dashboard', compact('totalUsuarios', 'lowStockProducts', 'totalDebtors', 'latestSales'));
     }
 }
